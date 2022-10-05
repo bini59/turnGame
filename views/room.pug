@@ -1,0 +1,12 @@
+extends layout
+
+block header
+    script(type="module" src="/javascripts/room.js")
+
+block content
+    input(type="hidden" value=title id="room-title")
+    h1= title
+    p Welcome to #{title}
+
+    ul#users
+    

@@ -1,5 +1,46 @@
 extends layout
 
+block header
+  script(type="module" src="/javascripts/index.js")
+
 block content
+  
   h1= title
   p Welcome to #{title}
+
+  input(type="text" id="input-title" placeholder="title")
+  button(id="btn") 버튼
+
+  //- table with id="table" is created by javascript
+  //- th has id="th-no" and "th-title", "th-person" is created by javascript
+  table#table.rooms
+    thead
+      tr#tr-header
+        th#th-no No
+        th#th-title Title
+        th#th-person Person
+    tbody#table-body
+  
+  script.
+    const createRoom = (title) => {
+      fetch('/room', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              title: title
+          })
+      }).then((res) => {
+          return res;
+      }).catch((err) => {
+          console.log(err);
+      })
+    };
+
+    document.getElementById("btn").addEventListener("click", function(){
+      var title = document.getElementById("input-title").value;
+      createRoom(title);
+    });
+
+
