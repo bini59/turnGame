@@ -4,7 +4,19 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// socket io
+var socket = require('socket.io');
+var io = socket(3001, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+var Roomlist = [];
+
 var indexRouter = require('./routes/index');
+var roomRouter = require('./routes/room')(io, Roomlist);
 
 
 var app = express();
@@ -20,6 +32,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/room', roomRouter);
 
 
 

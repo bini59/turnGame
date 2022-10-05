@@ -44,6 +44,7 @@ const roomRouter = (io, Roomlist) => {
                 capacity: req.body.capacity || 2,
             };
             Roomlist.push(newRoom);
+            io.emit('roomlist', Roomlist);
             res.redirect(`/room/${title}`);
         }
     });
@@ -95,10 +96,19 @@ const roomRouter = (io, Roomlist) => {
                 if (index !== -1) {
                     room.users.splice(index, 1);
                     io.to(room.title).emit('leave', socket.id);
+
+                    // if users length is not same as capacity, set state to 'waiting'
+                    if (room.users.length !== room.capacity) {
+                        room.state = 'waiting';
+
+                        // send one room info
+                        io.emit('roomlist', Roomlist);
+                    }
                     if (room.users.length === 0) {
                         const roomIndex = Roomlist.indexOf(room);
                         Roomlist.splice(roomIndex, 1);
-                        // send roomlist to client
+
+                        // send remove room info
                         io.emit('roomlist', Roomlist);
                     }
                 }
